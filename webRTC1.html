@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Realtime communication with WebRTC</title>
+    </head>
+    <body>
+        <h1>Realtime communication with WebRTC </h1>
+        <video autoplay playsinline></video>
+    </body>
+    <script type="text/javascript">
+		'use strict';
+
+		const mediaStreamContrains = {
+		    video: {
+		    	frameRate: {min: 20},        
+		    	width: {min: 640, ideal: 1280},        
+		    	height: {min: 360, ideal: 720},      
+		    	aspectRatio: 4/3
+		    },
+		    audio: {
+		    	echoCancellation: true, 
+		    	noiseSuppression: true, 
+		    	autoGainControl: true
+		    }
+		};
+
+		const localVideo = document.querySelector('video');
+
+		function gotLocalMediaStream(mediaStream){
+		    localVideo.srcObject = mediaStream;
+		}
+
+		function handleLocalMediaStreamError(error){
+		    console.log('navigator.getUserMedia error: ', error);
+		}
+
+		navigator.mediaDevices.getUserMedia(mediaStreamContrains).then(
+		    gotLocalMediaStream
+		).catch(
+		    handleLocalMediaStreamError
+		);
+
+
+		//判断浏览器是否支持这些 API
+		if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+		  console.log("enumerateDevices() not supported.");
+		  // return;
+		}
+
+		// 枚举 cameras and microphones.
+		navigator.mediaDevices.enumerateDevices()
+		.then(function(deviceInfos) {
+
+		  //打印出每一个设备的信息
+		  deviceInfos.forEach(function(deviceInfo) {
+		    console.log(deviceInfo.kind + ": " + deviceInfo.label +
+		                " id = " + deviceInfo.deviceId);
+		  });
+		})
+		.catch(function(err) {
+		  console.log(err.name + ": " + err.message);
+		});
+    </script>
+</html>
